@@ -53,7 +53,7 @@ func parseReminderNotes(input string) (*ReminderMeta, error) {
 }
 
 func getRemindersByList(listName string) ([]Reminder, error) {
-	cmd := exec.Command("/Users/taizhang/.local/bin/reminders", "export-all")
+	cmd := exec.Command(REMINDERS_CLI, "export-all")
 	var out strings.Builder
 	var stderr strings.Builder
 	var rl RemindersAll

@@ -15,7 +15,7 @@ var (
 	AD_PASS         string
 	GITHUB_API_BASE string
 	GITHUB_TOKEN    string
-	CONFLUENCE_BASE string
+	REMINDERS_CLI   string
 )
 
 func main() {
@@ -27,6 +27,7 @@ func main() {
 	AD_PASS = os.Getenv("AD_PASS")
 	GITHUB_API_BASE = os.Getenv("GITHUB_API_BASE")
 	GITHUB_TOKEN = os.Getenv("GITHUB_TOKEN")
+	REMINDERS_CLI = os.Getenv("REMINDERS_CLI")
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		addRoutes(e)

@@ -68,28 +68,4 @@ func addRoutes(e *core.ServeEvent) {
 			apis.ActivityLogger(app),
 		},
 	})
-	e.Router.AddRoute(echo.Route{
-		Method:  http.MethodPost,
-		Path:    "/api/services/confluence/bookmarks",
-		Handler: saveBookmarksConfluence,
-		Middlewares: []echo.MiddlewareFunc{
-			apis.ActivityLogger(app),
-		},
-	})
-	e.Router.AddRoute(echo.Route{
-		Method:  http.MethodPost,
-		Path:    "/api/services/confluence/pages",
-		Handler: createConfluencePageHandler,
-		Middlewares: []echo.MiddlewareFunc{
-			apis.ActivityLogger(app),
-		},
-	})
-	e.Router.AddRoute(echo.Route{
-		Method:  http.MethodPost,
-		Path:    "/api/services/confluence/pages/change-evidences",
-		Handler: createConfluencePageChangeEvidencesHandler,
-		Middlewares: []echo.MiddlewareFunc{
-			apis.ActivityLogger(app),
-		},
-	})
 }
