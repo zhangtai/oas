@@ -19,6 +19,6 @@ Open Alfred -> Advanced -> Set preferences folder, and set to `./launcher`
 - Clone submodule: `git submodule update --init --recursive`
 - Link the plugin: `ln -sf ${PWD}/deck/ai.zhangt.oas.sdPlugin ~/Library/Application\ Support/com.elgato.StreamDeck/Plugins/ai.zhangt.oas.sdPlugin`
 
-## Shortcuts
+## Keyboard Shortcuts
 
-Check [./shortcuts.md](shortcuts.md)
+Check [./keyboard_shortcuts.md](keyboard_shortcuts.md)
