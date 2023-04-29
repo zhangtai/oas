@@ -20,7 +20,7 @@
 	"CategoryIcon": "assets/tigergold",
 	"Actions": [
 		{
-			"Icon": "actions/teamsunread/assets/ms-temas",
+			"Icon": "actions/teams/assets/ms-temas",
 			"Name": "Teams Unread",
 			"Controllers": [
 				"Keypad",
@@ -37,11 +37,11 @@
 			},
 			"States": [
 				{
-					"Image": "actions/teamsunread/assets/ms-temas"
+					"Image": "actions/teams/assets/ms-temas"
 				}
 			],
 			"Tooltip": "This is an example tooltip",
-			"UUID": "ai.zhangt.oas.teamsunread.action",
+			"UUID": "ai.zhangt.oas.teams.action",
 			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html"
 		},
 		{
@@ -91,7 +91,7 @@
 				}
 			],
 			"Tooltip": "This is an example tooltip",
-			"UUID": "ai.zhangt.oas.eventcountdown.action",
+			"UUID": "ai.zhangt.oas.reminders.action",
 			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html"
 		}
 	]
