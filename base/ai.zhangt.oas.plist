@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Label</key>
+        <string>ai.zhangt.oas</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/Users/taizhang/.local/bin/oas</string>
+            <string>serve</string>
+            <string>--dir</string>
+            <string>/Users/taizhang/.local/var/oas/pb_data</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+        <key>WorkingDirectory</key>
+        <string>/Users/taizhang/.local/var/oas</string>
+        <key>StandardErrorPath</key>
+        <string>/Users/taizhang/.local/var/oas/log/oas.err</string>
+        <key>StandardOutPath</key>
+        <string>/Users/taizhang/.local/var/oas/log/oas.log</string> 
+    </dict>
+</plist>

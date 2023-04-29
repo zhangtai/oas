@@ -1,0 +1,98 @@
+{
+	"SDKVersion": 2,
+	"Author": "ZHANG Tai",
+	"CodePath": "app.html",
+	"Description": "Overcomplicated Automation System - Deck Plugin",
+	"Name": "OAS",
+	"Icon": "assets/tigergold",
+	"URL": "https://github.com/zhangtai/oas",
+	"Version": "0.0.1",
+	"Software": {
+		"MinimumVersion": "6.0"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "13"
+		}
+	],
+	"Category": "OAS",
+	"CategoryIcon": "assets/tigergold",
+	"Actions": [
+		{
+			"Icon": "actions/teamsunread/assets/ms-temas",
+			"Name": "Teams Unread",
+			"Controllers": [
+				"Keypad",
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "$B1",
+				"TriggerDescription": {
+					"Rotate": "Describe the rotation",
+					"Push": "Describe the encoder push",
+					"Touch": "Describe the touch",
+					"LongTouch": "Describe the long touch"
+				}
+			},
+			"States": [
+				{
+					"Image": "actions/teamsunread/assets/ms-temas"
+				}
+			],
+			"Tooltip": "This is an example tooltip",
+			"UUID": "ai.zhangt.oas.teamsunread.action",
+			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html"
+		},
+		{
+			"Icon": "actions/outlook/assets/outlook",
+			"Name": "Outlook",
+			"Controllers": [
+				"Keypad",
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "$B1",
+				"TriggerDescription": {
+					"Rotate": "Describe the rotation",
+					"Push": "Describe the encoder push",
+					"Touch": "Describe the touch",
+					"LongTouch": "Describe the long touch"
+				}
+			},
+			"States": [
+				{
+					"Image": "actions/outlook/assets/outlook"
+				}
+			],
+			"Tooltip": "This is an example tooltip",
+			"UUID": "ai.zhangt.oas.outlook.action",
+			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html"
+		},
+		{
+			"Icon": "actions/event/assets/event",
+			"Name": "Next Event",
+			"Controllers": [
+				"Keypad",
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "$B1",
+				"TriggerDescription": {
+					"Rotate": "Describe the rotation",
+					"Push": "Describe the encoder push",
+					"Touch": "Describe the touch",
+					"LongTouch": "Describe the long touch"
+				}
+			},
+			"States": [
+				{
+					"Image": "actions/event/assets/event"
+				}
+			],
+			"Tooltip": "This is an example tooltip",
+			"UUID": "ai.zhangt.oas.eventcountdown.action",
+			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html"
+		}
+	]
+}

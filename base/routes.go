@@ -1,0 +1,95 @@
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/labstack/echo/v5"
+	"github.com/pocketbase/dbx"
+	"github.com/pocketbase/pocketbase/apis"
+	"github.com/pocketbase/pocketbase/core"
+)
+
+func deleteBookmarksByService(serviceId string) error {
+	records, err := app.Dao().FindRecordsByExpr("bookmark_items", dbx.HashExp{"service": serviceId})
+	if err != nil {
+		log.Fatal("Failed to get records of bookmark_items of service")
+		return err
+	}
+
+	for _, record := range records {
+		if err := app.Dao().DeleteRecord(record); err != nil {
+			log.Fatal("Failed to delete record")
+			log.Fatal(record)
+			return err
+		}
+	}
+	return nil
+}
+
+func addRoutes(e *core.ServeEvent) {
+	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodPost,
+		Path:    "/api/system/open",
+		Handler: systemOpenHandler,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodGet,
+		Path:    "/api/apps/chromium/tabs/:index",
+		Handler: chromiumTabsHandler,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodPost,
+		Path:    "/api/apps/chromium/tabs/:index/:action",
+		Handler: chromiumTabsActionsHandler,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodGet,
+		Path:    "/api/apps/reminders/lists/:name",
+		Handler: remindersListGetHandler,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodPost,
+		Path:    "/api/services/github/bookmarks",
+		Handler: saveBookmarksGitHubHandler,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodPost,
+		Path:    "/api/services/confluence/bookmarks",
+		Handler: saveBookmarksConfluence,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodPost,
+		Path:    "/api/services/confluence/pages",
+		Handler: createConfluencePageHandler,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodPost,
+		Path:    "/api/services/confluence/pages/change-evidences",
+		Handler: createConfluencePageChangeEvidencesHandler,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+}
