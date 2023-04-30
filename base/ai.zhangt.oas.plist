@@ -18,6 +18,6 @@
         <key>StandardErrorPath</key>
         <string>${HOME}/.local/var/oas/log/oas.err</string>
         <key>StandardOutPath</key>
-        <string>${HOME}/.local/var/oas/log/oas.log</string>
+        <string>${HOME}/.local/var/oas/log/oas.log</string> 
     </dict>
 </plist>

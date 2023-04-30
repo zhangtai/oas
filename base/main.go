@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -15,11 +16,16 @@ var (
 	AD_PASS         string
 	GITHUB_API_BASE string
 	GITHUB_TOKEN    string
+	CONFLUENCE_BASE string
 	REMINDERS_CLI   string
 )
 
 func main() {
-	err := godotenv.Load("/Users/taizhang/.local/var/oas/.env")
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal("failed to get home dir for the user")
+	}
+	err = godotenv.Load(fmt.Sprintf("%s/.local/var/oas/.env", homeDir))
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
