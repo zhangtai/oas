@@ -12,11 +12,11 @@ import (
 
 var (
 	app             *pocketbase.PocketBase = pocketbase.New()
-	AD_USER         string
-	AD_PASS         string
+	CONFLUENCE_BASE string
+	CONFLUENCE_USER string
+	CONFLUENCE_PASS string
 	GITHUB_API_BASE string
 	GITHUB_TOKEN    string
-	CONFLUENCE_BASE string
 	REMINDERS_CLI   string
 )
 
@@ -29,8 +29,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	AD_USER = os.Getenv("AD_USER")
-	AD_PASS = os.Getenv("AD_PASS")
+	CONFLUENCE_BASE = os.Getenv("CONFLUENCE_BASE")
+	CONFLUENCE_USER = os.Getenv("CONFLUENCE_USER")
+	CONFLUENCE_PASS = os.Getenv("CONFLUENCE_PASS")
 	GITHUB_API_BASE = os.Getenv("GITHUB_API_BASE")
 	GITHUB_TOKEN = os.Getenv("GITHUB_TOKEN")
 	REMINDERS_CLI = os.Getenv("REMINDERS_CLI")
