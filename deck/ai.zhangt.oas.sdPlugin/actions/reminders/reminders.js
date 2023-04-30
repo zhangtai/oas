@@ -98,35 +98,33 @@ function countdownDisplay(jsonObj) {
     };
 }
 
-const geneartearemindersAction = (actionId) => {
-    return {
-        type: actionId,
-        cache: {},
+const upcommingremindersAction = {
+    type: "ai.zhangt.oas.reminders.action",
+    cache: {},
 
-        onWillAppear: function (jsn) {
-            drawCountdownIcon(jsn.context)
-            const display = new countdownDisplay(jsn);
-            this.cache[jsn.context] = display;
-        },
+    onWillAppear: function (jsn) {
+        drawCountdownIcon(jsn.context)
+        const display = new countdownDisplay(jsn);
+        this.cache[jsn.context] = display;
+    },
 
-        onWillDisappear: function (jsn) {
-            let found = this.cache[jsn.context];
-            if (found) {
-                found.destroyDisplay();
-                delete this.cache[jsn.context];
-            }
-        },
-
-        onKeyUp: function (jsn) {
-            fetch("http://localhost:8090/api/system/open", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    uri: latestEventUrl
-                })
-            })
+    onWillDisappear: function (jsn) {
+        let found = this.cache[jsn.context];
+        if (found) {
+            found.destroyDisplay();
+            delete this.cache[jsn.context];
         }
+    },
+
+    onKeyUp: function (jsn) {
+        fetch("http://localhost:8090/api/system/open", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                uri: latestEventUrl
+            })
+        })
     }
 }

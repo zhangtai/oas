@@ -20,8 +20,8 @@
 	"CategoryIcon": "assets/tigergold",
 	"Actions": [
 		{
-			"Icon": "actions/teams/assets/ms-temas",
-			"Name": "Teams Unread",
+			"Icon": "actions/notifications/assets/message.badge.fill",
+			"Name": "Notifications",
 			"Controllers": [
 				"Keypad",
 				"Encoder"
@@ -37,16 +37,16 @@
 			},
 			"States": [
 				{
-					"Image": "actions/teams/assets/ms-temas"
+					"Image": "actions/notifications/assets/message.badge.fill"
 				}
 			],
 			"Tooltip": "This is an example tooltip",
-			"UUID": "ai.zhangt.oas.teams.action",
-			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html"
+			"UUID": "ai.zhangt.oas.notifications.action",
+			"PropertyInspectorPath": "actions/notifications/property-inspector/inspector.html"
 		},
 		{
-			"Icon": "actions/outlook/assets/outlook",
-			"Name": "Outlook",
+			"Icon": "actions/reminders/assets/event",
+			"Name": "Reminders",
 			"Controllers": [
 				"Keypad",
 				"Encoder"
@@ -62,37 +62,12 @@
 			},
 			"States": [
 				{
-					"Image": "actions/outlook/assets/outlook"
-				}
-			],
-			"Tooltip": "This is an example tooltip",
-			"UUID": "ai.zhangt.oas.outlook.action",
-			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html"
-		},
-		{
-			"Icon": "actions/event/assets/event",
-			"Name": "Next Event",
-			"Controllers": [
-				"Keypad",
-				"Encoder"
-			],
-			"Encoder": {
-				"layout": "$B1",
-				"TriggerDescription": {
-					"Rotate": "Describe the rotation",
-					"Push": "Describe the encoder push",
-					"Touch": "Describe the touch",
-					"LongTouch": "Describe the long touch"
-				}
-			},
-			"States": [
-				{
-					"Image": "actions/event/assets/event"
+					"Image": "actions/reminders/assets/event"
 				}
 			],
 			"Tooltip": "This is an example tooltip",
 			"UUID": "ai.zhangt.oas.reminders.action",
-			"PropertyInspectorPath": "actions/template/property-inspector/inspector.html"
+			"PropertyInspectorPath": "actions/reminders/property-inspector/inspector.html"
 		}
 	]
 }
