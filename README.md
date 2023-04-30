@@ -22,3 +22,10 @@ Open Alfred -> Advanced -> Set preferences folder, and set to `./launcher`
 ## Keyboard Shortcuts
 
 Check [./keyboard_shortcuts.md](keyboard_shortcuts.md)
+
+## Tips
+
+```shell
+# Get hash of all files
+ls -p | grep -v / | sort -f | xargs sha1sum
+```

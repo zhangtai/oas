@@ -4,7 +4,7 @@ install:
 	touch ${HOME}/.local/var/oas/log/oas.{log,err}
 	go build -ldflags "-s -w" -o ${HOME}/.local/bin/oas; \
 	envsubst < ai.zhangt.oas.plist > ${HOME}/Library/LaunchAgents/ai.zhangt.oas.plist; \
-	launchctl enable gui/501/ai.zhangt.oas;
+	launchctl enable gui/${UID}/ai.zhangt.oas;
 
 run:
 	go run . serve --http localhost:8089
@@ -13,7 +13,7 @@ release:
 	go build -ldflags "-s -w" -o ${HOME}/.local/bin/oas
 
 restart:
-	launchctl kickstart -kp gui/501/ai.zhangt.oas
+	launchctl kickstart -kp gui/${UID}/ai.zhangt.oas
 
 start:
-	launchctl kickstart gui/501/ai.zhangt.oas
+	launchctl kickstart gui/${UID}/ai.zhangt.oas
