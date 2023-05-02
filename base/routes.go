@@ -37,6 +37,14 @@ func addRoutes(e *core.ServeEvent) {
 		},
 	})
 	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodPost,
+		Path:    "/api/system/applescript",
+		Handler: appleScriptHandler,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+	e.Router.AddRoute(echo.Route{
 		Method:  http.MethodGet,
 		Path:    "/api/apps/chromium/tabs/:index",
 		Handler: chromiumTabsHandler,
@@ -48,6 +56,14 @@ func addRoutes(e *core.ServeEvent) {
 		Method:  http.MethodPost,
 		Path:    "/api/apps/chromium/tabs/:index/:action",
 		Handler: chromiumTabsActionsHandler,
+		Middlewares: []echo.MiddlewareFunc{
+			apis.ActivityLogger(app),
+		},
+	})
+	e.Router.AddRoute(echo.Route{
+		Method:  http.MethodPost,
+		Path:    "/api/apps/chromium/tab",
+		Handler: chromiumTabFindHandler,
 		Middlewares: []echo.MiddlewareFunc{
 			apis.ActivityLogger(app),
 		},
