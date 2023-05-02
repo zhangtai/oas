@@ -68,6 +68,31 @@
 			"Tooltip": "This is an example tooltip",
 			"UUID": "ai.zhangt.oas.reminders.action",
 			"PropertyInspectorPath": "actions/reminders/property-inspector/inspector.html"
+		},
+		{
+			"Icon": "actions/charts/assets/chart.xyaxis.line",
+			"Name": "Charts",
+			"Controllers": [
+				"Keypad",
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "$B1",
+				"TriggerDescription": {
+					"Rotate": "Describe the rotation",
+					"Push": "Describe the encoder push",
+					"Touch": "Describe the touch",
+					"LongTouch": "Describe the long touch"
+				}
+			},
+			"States": [
+				{
+					"Image": "actions/charts/assets/chart.xyaxis.line"
+				}
+			],
+			"Tooltip": "This is an example tooltip",
+			"UUID": "ai.zhangt.oas.charts.action",
+			"PropertyInspectorPath": "actions/charts/property-inspector/inspector.html"
 		}
 	]
 }

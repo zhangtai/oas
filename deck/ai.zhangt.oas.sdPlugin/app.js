@@ -25,4 +25,12 @@ function connected(jsn) {
     $SD.on('ai.zhangt.oas.reminders.action.keyUp', jsonObj =>
         upcommingremindersAction.onKeyUp(jsonObj)
     );
+
+    /** Event Countdown */
+    $SD.on('ai.zhangt.oas.charts.action.willAppear', jsonObj =>
+        chartsAction.onWillAppear(jsonObj)
+    );
+    $SD.on('ai.zhangt.oas.charts.action.willDisappear', jsonObj =>
+        chartsAction.onWillDisappear(jsonObj)
+    );
 }
