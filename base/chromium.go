@@ -11,9 +11,10 @@ import (
 )
 
 type BrowserTab struct {
-	Index int    `json:"index"`
-	Title string `json:"title"`
-	Url   string `json:"url"`
+	Index        int    `json:"index"`
+	Title        string `json:"title"`
+	Url          string `json:"url"`
+	ScriptOutput string `json:"scriptOutput"`
 }
 
 func getChromiumTabByIndex(index int) (BrowserTab, error) {
@@ -38,43 +39,62 @@ func getChromiumTabByIndex(index int) (BrowserTab, error) {
 	}, nil
 }
 
-func getChromiumTabByUrl(startsOfUrl string) (BrowserTab, error) {
+func getChromiumTabByUrl(p TabPayload) (BrowserTab, error) {
 	script := fmt.Sprintf(`tell application "Chromium"
+	set executeJs to %t
+	set activateFoundTab to %t
 	repeat with the_window in every window
 		set tab_index to 0
 		repeat with the_tab in every tab in the_window
 		    set tab_index to tab_index + 1
 			set the_url to the URL of the_tab
 			set the_title to the title of the_tab
+			set jsOutput to "None"
 			if {the_url starts with "%s"} then
-		        return tab_index & the_title & the_url
+				if activateFoundTab then
+					set active tab index of the_window to tab_index
+					activate the_window
+				end if
+				if executeJs then
+					set jsOutput to execute tab tab_index of the_window javascript "%s"
+				end if
+		        return tab_index & the_title & the_url & jsOutput
 			end if
 		end repeat
 	end repeat
-	end tell`, startsOfUrl)
+	end tell`,
+		p.Script != "",
+		p.Activate,
+		p.UrlStartsWith,
+		p.Script,
+	)
 	output, err := runAppleScript(script)
+	log.Println(output)
 	tabComponents := strings.Split(output, ", ")
-	if err != nil || len(tabComponents) != 3 {
+	if err != nil || len(tabComponents) != 4 {
 		log.Println(err)
 		return BrowserTab{
-			Index: -1,
-			Title: "",
-			Url:   "",
+			Index:        -1,
+			Title:        "",
+			Url:          "",
+			ScriptOutput: "",
 		}, err
 	}
 	index, err := strconv.Atoi(tabComponents[0])
 	if err != nil {
 		log.Println(err)
 		return BrowserTab{
-			Index: -1,
-			Title: "",
-			Url:   "",
+			Index:        -1,
+			Title:        "",
+			Url:          "",
+			ScriptOutput: "",
 		}, err
 	}
 	return BrowserTab{
-		Index: index,
-		Title: tabComponents[1],
-		Url:   tabComponents[2],
+		Index:        index,
+		Title:        tabComponents[1],
+		Url:          tabComponents[2],
+		ScriptOutput: tabComponents[3],
 	}, nil
 }
 
@@ -119,7 +139,9 @@ func chromiumTabsHandler(c echo.Context) error {
 }
 
 type TabPayload struct {
-	Script string `json:"script"`
+	Script        string `json:"script"`
+	UrlStartsWith string `json:"urlStartsWith"`
+	Activate      bool   `json:"activate"`
 }
 
 func chromiumTabsActionsHandler(c echo.Context) error {
@@ -150,4 +172,18 @@ func chromiumTabsActionsHandler(c echo.Context) error {
 	}
 
 	return c.String(http.StatusOK, "OK")
+}
+
+func chromiumTabFindHandler(c echo.Context) error {
+	var p TabPayload
+	if err := c.Bind(&p); err != nil {
+		log.Println(err)
+		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
+	}
+	tab, err := getChromiumTabByUrl(p)
+	if err != nil {
+		log.Println(err)
+		return c.String(http.StatusBadRequest, "bad request, failed to execute javascript")
+	}
+	return c.JSON(http.StatusOK, tab)
 }
