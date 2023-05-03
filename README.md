@@ -27,5 +27,10 @@ Check [./keyboard_shortcuts.md](keyboard_shortcuts.md)
 
 ```shell
 # Get hash of all files
-ls -p | grep -v / | sort -f | xargs sha1sum
+fd -tf \
+    -E '/base/tests' \
+    -E '/launcher' \
+    -E '/deck/ai.zhangt.oas.sdPlugin/libs' \
+    -E '/deck/ai.zhangt.oas.sdPlugin/vendor' \
+    -x shasum | sort -f -t ' ' -k2
 ```

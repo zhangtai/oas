@@ -17,21 +17,23 @@ const getStatusIcon = (svgTemplate, primaryColor, secondaryColor) => {
 const drawStateIcon = (jsn) => {
     const settings = jsn.payload.settings;
     const parser = eval(settings.parserFunction)
-    console.log(settings)
-    let fetchOption = {method: "GET"};
-    if (settings.fetchType == "POST") {
-        fetchOption = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ script: settings.fetchPostJs })
-        }
+    // console.log(settings)
+    fetchOption = {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            script: settings.fetchPostJs,
+            urlStartsWith: settings.urlStartsWith
+        })
     }
-    fetch(settings.fetchEndpoint, fetchOption)
+    // console.log(fetchOption)
+    fetch("http://localhost:8090/api/apps/chromium/tab", fetchOption)
         .then(response => response.json())
         .then(data => {
-            const countName = settings.appName + "UnreadCount";
+            // console.log(data)
+            const countName = jsn.context + "UnreadCount";
             const count = parser(data)
             if (window[countName] === undefined || count != window[countName]) {
                 console.log(`[${countName}]Unread count changed from ${window[countName]} to ${count}`);
@@ -132,8 +134,15 @@ const notificationsAction = {
     },
 
     onKeyUp: function (jsn) {
-        fetch(`http://127.0.0.1:8090/api/apps/chromium/tabs/${parseInt(jsn.payload.settings.tabIndex)}/activate`, {
-            method: "POST"
-        })
+        fetchOption = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "script": `activate application "${jsn.payload.settings.appName}"`
+            })
+        }
+        fetch("http://localhost:8090/api/system/applescript", fetchOption)
     }
 }
