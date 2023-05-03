@@ -16,10 +16,15 @@ type OpenPayload struct {
 
 type AppleScriptPayload struct {
 	Script string `json:"script"`
+	IsJavaScript bool `json:"isJavaScript"`
 }
 
-func runAppleScript(script string) (string, error) {
-	cmd := exec.Command("/usr/bin/osascript", "-s", "h", "-e", script)
+func runAppleScript(p AppleScriptPayload) (string, error) {
+	cmd := exec.Command("/usr/bin/osascript", "-s", "h", "-e", p.Script)
+	if p.IsJavaScript {
+		cmd = exec.Command("/usr/bin/osascript", "-s", "h", "-l", "JavaScript", "-e", p.Script)
+	}
+
 	var out strings.Builder
 	var stderr strings.Builder
 	cmd.Stdout = &out
@@ -64,7 +69,7 @@ func appleScriptHandler(c echo.Context) error {
 	if err := c.Bind(&payload); err != nil {
 		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
 	}
-	output, err := runAppleScript(payload.Script)
+	output, err := runAppleScript(payload)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
 	}

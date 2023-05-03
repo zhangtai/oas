@@ -55,7 +55,7 @@ type ConfluencePagePayload struct {
 }
 
 type SimplePagePayload struct {
-	SpaceKey string `json:"spaceKey`
+	SpaceKey string `json:"spaceKey"`
 	Parent   int    `json:"parent"`
 	Title    string `json:"title"`
 	Content  string `json:"content"`

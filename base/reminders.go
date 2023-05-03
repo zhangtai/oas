@@ -114,7 +114,7 @@ func remindersListGetHandler(c echo.Context) error {
 	if err != nil {
 		getNext = false
 	}
-	if getNext == true {
+	if getNext {
 		if len(reminders) > 1 {
 			return c.JSON(http.StatusOK, reminders[0])
 		}
