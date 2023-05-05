@@ -4,7 +4,7 @@
 	"CodePath": "app.html",
 	"Description": "Overcomplicated Automation System - Deck Plugin",
 	"Name": "ai.zhangt.oas",
-	"Icon": "assets/tigergold",
+	"Icon": "assets/oas",
 	"URL": "https://github.com/zhangtai/oas",
 	"Version": "0.0.1",
 	"Software": {
@@ -17,7 +17,7 @@
 		}
 	],
 	"Category": "OAS",
-	"CategoryIcon": "assets/tigergold",
+	"CategoryIcon": "assets/oas",
 	"Actions": [
 		{
 			"Icon": "actions/notifications/assets/message.badge.fill",
