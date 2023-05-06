@@ -10,13 +10,13 @@ import (
 	"github.com/labstack/echo/v5"
 )
 
-type OpenPayload struct {
-	Uri string `json:"uri"`
+type AppleScriptPayload struct {
+	Script       string `json:"script"`
+	IsJavaScript bool   `json:"isJavaScript"`
 }
 
-type AppleScriptPayload struct {
-	Script string `json:"script"`
-	IsJavaScript bool `json:"isJavaScript"`
+type CommandPayload struct {
+	Command []string `json:"command"`
 }
 
 func runAppleScript(p AppleScriptPayload) (string, error) {
@@ -37,8 +37,20 @@ func runAppleScript(p AppleScriptPayload) (string, error) {
 	return strings.TrimSpace(out.String()), nil
 }
 
-func open(uri string) (string, error) {
-	cmd := exec.Command("/usr/bin/open", uri)
+func appleScriptHandler(c echo.Context) error {
+	var payload AppleScriptPayload
+	if err := c.Bind(&payload); err != nil {
+		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
+	}
+	output, err := runAppleScript(payload)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
+	}
+	return c.String(http.StatusOK, output)
+}
+
+func runCommand(p CommandPayload) (string, error) {
+	cmd := exec.Command(p.Command[0], p.Command[1:]...)
 	var out strings.Builder
 	var stderr strings.Builder
 	cmd.Stdout = &out
@@ -51,25 +63,12 @@ func open(uri string) (string, error) {
 	return strings.TrimSpace(out.String()), nil
 }
 
-func systemOpenHandler(c echo.Context) error {
-	var payload OpenPayload
+func commandHandler(c echo.Context) error {
+	var payload CommandPayload
 	if err := c.Bind(&payload); err != nil {
 		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
 	}
-	output, err := open(payload.Uri)
-	if err != nil {
-		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
-	}
-
-	return c.String(http.StatusOK, output)
-}
-
-func appleScriptHandler(c echo.Context) error {
-	var payload AppleScriptPayload
-	if err := c.Bind(&payload); err != nil {
-		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
-	}
-	output, err := runAppleScript(payload)
+	output, err := runCommand(payload)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
 	}

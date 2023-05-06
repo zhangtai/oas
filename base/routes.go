@@ -30,8 +30,8 @@ func deleteBookmarksByService(serviceId string) error {
 func addRoutes(e *core.ServeEvent) {
 	e.Router.AddRoute(echo.Route{
 		Method:  http.MethodPost,
-		Path:    "/api/system/open",
-		Handler: systemOpenHandler,
+		Path:    "/api/system/command",
+		Handler: commandHandler,
 		Middlewares: []echo.MiddlewareFunc{
 			apis.ActivityLogger(app),
 		},
