@@ -11,7 +11,7 @@ const toHHMM = (seconds) => {
     return overdueSign + hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
 }
 
-var latestEventUrl = "";
+var latestReminderUrl = "";
 
 const drawCountdownIcon = (ctx) => {
     const ts = (new Date()).toISOString().replace("T", " ").replace(/\.\d\d\d/, "")
@@ -40,7 +40,7 @@ const drawCountdownIcon = (ctx) => {
                     hostStartPosition = 72 - host.length * 8;
                 }
                 if (data.meta?.url) {
-                    latestEventUrl = data.meta.url;
+                    latestReminderUrl = data.meta.url;
                 }
             }
             let svgString = `<svg height="144px" width="144px" xmlns="http://www.w3.org/2000/svg"><text x="${hostStartPosition}" y="40" style="fill: #c27fcd; font-size: 36px;">${host}</text><text x="6" y="94" style="fill: ${color}; font-size: ${timeFontSize}px;">${leftTime}</text></svg>`
@@ -98,7 +98,7 @@ function countdownDisplay(jsonObj) {
     };
 }
 
-const upcommingremindersAction = {
+const nextReminderAction = {
     type: "ai.zhangt.oas.reminders.action",
     cache: {},
 
@@ -117,13 +117,13 @@ const upcommingremindersAction = {
     },
 
     onKeyUp: function (jsn) {
-        fetch("http://localhost:8090/api/system/open", {
+        fetch("http://localhost:8090/api/system/command", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                uri: latestEventUrl
+                command: ["open", latestReminderUrl]
             })
         })
     }

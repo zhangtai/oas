@@ -17,13 +17,13 @@ function connected(jsn) {
 
     /** Event Countdown */
     $SD.on('ai.zhangt.oas.reminders.action.willAppear', jsonObj =>
-        upcommingremindersAction.onWillAppear(jsonObj)
+        nextReminderAction.onWillAppear(jsonObj)
     );
     $SD.on('ai.zhangt.oas.reminders.action.willDisappear', jsonObj =>
-        upcommingremindersAction.onWillDisappear(jsonObj)
+        nextReminderAction.onWillDisappear(jsonObj)
     );
     $SD.on('ai.zhangt.oas.reminders.action.keyUp', jsonObj =>
-        upcommingremindersAction.onKeyUp(jsonObj)
+        nextReminderAction.onKeyUp(jsonObj)
     );
 
     /** Event Countdown */
