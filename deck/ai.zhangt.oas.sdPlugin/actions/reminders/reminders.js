@@ -14,10 +14,18 @@ const toHHMM = (seconds) => {
 var latestReminderUrl = "";
 
 const drawCountdownIcon = (ctx) => {
-    const ts = (new Date()).toISOString().replace("T", " ").replace(/\.\d\d\d/, "")
-    fetch("http://localhost:8090/api/apps/reminders/lists/Main?next=true")
+    fetch("http://localhost:8090/api/apps/reminders/all", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            dueDate: (new Date()).toISOString(),
+        })
+    })
         .then(resp => resp.json())
         .then(data => {
+            console.log(data)
             let leftTime = "--:--";
             let title = "NA";
             let color = "#8cac8c";
@@ -25,7 +33,9 @@ const drawCountdownIcon = (ctx) => {
             let timeFontSize = 50;
             let hostStartPosition = 42;
             if (data) {
-                const eventTime = new Date(data.dueDate)
+                reminder = data[0]
+                const eventTime = new Date(reminder.dueDate)
+                console.log(eventTime)
                 const seconds = (eventTime - (new Date())) / 1000
                 if (seconds < 5 * 60) {
                     color = "red";
@@ -34,13 +44,13 @@ const drawCountdownIcon = (ctx) => {
                 if (leftTime.length > 5) {
                     timeFontSize = 44;
                 }
-                title = data.title;
-                if (data.meta?.host) {
-                    host = data.meta.host;
+                title = reminder.title;
+                if (reminder.meta?.host) {
+                    host = reminder.meta.host;
                     hostStartPosition = 72 - host.length * 8;
                 }
-                if (data.meta?.url) {
-                    latestReminderUrl = data.meta.url;
+                if (reminder.meta?.url) {
+                    latestReminderUrl = reminder.meta.url;
                 }
             }
             let svgString = `<svg height="144px" width="144px" xmlns="http://www.w3.org/2000/svg"><text x="${hostStartPosition}" y="40" style="fill: #c27fcd; font-size: 36px;">${host}</text><text x="6" y="94" style="fill: ${color}; font-size: ${timeFontSize}px;">${leftTime}</text></svg>`

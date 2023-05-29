@@ -53,9 +53,9 @@ func addRoutes(e *core.ServeEvent) {
 		},
 	})
 	e.Router.AddRoute(echo.Route{
-		Method:  http.MethodGet,
-		Path:    "/api/apps/reminders/lists/:name",
-		Handler: remindersListGetHandler,
+		Method:  http.MethodPost,
+		Path:    "/api/apps/reminders/all",
+		Handler: getRemindersAllHandler,
 		Middlewares: []echo.MiddlewareFunc{
 			apis.ActivityLogger(app),
 		},

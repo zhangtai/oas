@@ -13,7 +13,7 @@ import (
 )
 
 type ConfluencePageLinks struct {
-	Tiniui string `json:"tinyui"`
+	Tinyui string `json:"tinyui"`
 	Base   string `json:"base"`
 }
 
@@ -25,8 +25,13 @@ type ConfluencePage struct {
 	Links  ConfluencePageLinks `json:"_links"`
 }
 
-type ConfluenceResonse struct {
+type ConfluenceResponse struct {
 	Results []ConfluencePage `json:"results"`
+}
+
+type ConfluenceQueryResponse struct {
+	Results []ConfluencePage    `json:"results"`
+	Links   ConfluencePageLinks `json:"_links"`
 }
 
 type PageAncestor struct {
@@ -62,14 +67,14 @@ type SimplePagePayload struct {
 }
 
 type ConfluencePageCreatedResponse struct {
-	Id     string `josn:"id"`
+	Id     string `json:"id"`
 	Type   string `json:"type"`
 	Status string `json:"status"`
 	Title  string `json:"title"`
 }
 
-func getConfluenceFavs() ([]ConfluencePage, error) {
-	var confluence ConfluenceResonse
+func getConfluenceFavs() (*ConfluenceQueryResponse, error) {
+	var confluence ConfluenceQueryResponse
 	endpoint := CONFLUENCE_BASE + "/rest/api/content/search?limit=50&cql=favourite=currentUser()"
 	req, err := http.NewRequest("GET", endpoint, nil)
 	req.SetBasicAuth(CONFLUENCE_USER, CONFLUENCE_PASS)
@@ -89,19 +94,19 @@ func getConfluenceFavs() ([]ConfluencePage, error) {
 	}
 	json.Unmarshal(body, &confluence)
 	log.Printf("Got confluence faviroute pages: %d", len(confluence.Results))
-	return confluence.Results, nil
+	return &confluence, nil
 }
 
-func saveConfluenceItems(serviceId string, items []ConfluencePage) error {
+func saveConfluenceItems(serviceId string, c ConfluenceQueryResponse) error {
 	bmiCollection, err := app.Dao().FindCollectionByNameOrId("bookmark_items")
 	if err != nil {
 		log.Fatal("Failed to get collection: bookmark_items")
 		return err
 	}
-	for _, item := range items {
+	for _, item := range c.Results {
 		record := models.NewRecord(bmiCollection)
 		record.Set("name", item.Title)
-		record.Set("url", item.Links.Base+item.Links.Tiniui)
+		record.Set("url", c.Links.Base+item.Links.Tinyui)
 		record.Set("service", serviceId)
 		if err := app.Dao().SaveRecord(record); err != nil {
 			log.Fatal("Failed to save record")
@@ -118,7 +123,7 @@ func saveBookmarksConfluence(c echo.Context) error {
 		log.Fatal("Failed to get Confluence record")
 		return err
 	}
-	pages, err := getConfluenceFavs()
+	confluenceResponse, err := getConfluenceFavs()
 	if err != nil {
 		log.Fatal("Failed to get all Confluence items")
 		return err
@@ -127,7 +132,7 @@ func saveBookmarksConfluence(c echo.Context) error {
 		log.Fatal("Failed to delete all Confluence items")
 		return err
 	}
-	if err = saveConfluenceItems(record.Id, pages); err != nil {
+	if err = saveConfluenceItems(record.Id, *confluenceResponse); err != nil {
 		log.Fatal("Failed to save all Confluence items")
 		return err
 	}
@@ -146,7 +151,7 @@ func createConfluencePagesHandler(c echo.Context) error {
 		if err != nil {
 			return err
 		}
-		results = append(results, result.Links.Base+result.Links.Tiniui)
+		results = append(results, result.Links.Base+result.Links.Tinyui)
 	}
 	return c.JSON(http.StatusOK, results)
 }

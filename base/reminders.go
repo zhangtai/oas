@@ -20,28 +20,54 @@ type ReminderMeta struct {
 }
 
 type Reminder struct {
-	CalendarTitle    string        `json:"calendarTitle"`
-	Id               string        `json:"id"`
-	Title            string        `json:"title"`
-	CreationDate     time.Time     `json:"creationDate"`
-	StartDate        *time.Time    `json:"startDate"`
-	CompletionDate   *time.Time    `json:"completionDate"`
-	LastModifiedDate time.Time     `json:"lastModifiedDate"`
-	DueDate          *time.Time    `json:"dueDate"`
-	Notes            *string       `json:"notes"`
-	Meta             *ReminderMeta `json:"meta"`
-	Priority         int           `json:"priority"`
-	IsCompleted      bool          `json:"isCompleted"`
+	DueDate     *time.Time    `json:"dueDate"`
+	ExternalId  string        `json:"externalId"`
+	IsCompleted bool          `json:"isCompleted"`
+	List        string        `json:"list"`
+	Notes       *string       `json:"notes"`
+	Priority    int           `json:"priority"`
+	Title       string        `json:"title"`
+	Meta        *ReminderMeta `json:"meta"`
 }
 
-type RemindersAll map[string][]Reminder
-
-type ListNotFoundError struct {
-	Name string
+type RemindersShowAllFilter struct {
+	DueDate time.Time `json:"dueDate"`
 }
 
-func (e *ListNotFoundError) Error() string {
-	return fmt.Sprintf("list not found: %v", e.Name)
+func getRemindersAll(filter RemindersShowAllFilter) ([]Reminder, error) {
+	var cmd *exec.Cmd
+	if !filter.DueDate.IsZero() {
+		log.Printf("Getting reminders with due date: %s", filter.DueDate.Format("2006-01-02"))
+		cmd = exec.Command(REMINDERS_CLI, "show-all", "-f", "json", "-d", filter.DueDate.Format("2006-01-02"))
+	} else {
+		cmd = exec.Command(REMINDERS_CLI, "show-all", "-f", "json")
+	}
+	var out strings.Builder
+	var stderr strings.Builder
+	var remindersResponse []Reminder
+	var reminders []Reminder
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	log.Println(out.String())
+	if err != nil {
+		log.Println(fmt.Sprint(err) + ": " + stderr.String())
+		return nil, err
+	}
+	if err = json.Unmarshal([]byte(out.String()), &remindersResponse); err != nil {
+		return nil, err
+	}
+	for _, r := range remindersResponse {
+		if r.Notes != nil {
+			meta, err := parseReminderNotes(*r.Notes)
+			if err != nil {
+				log.Println("failed to parse notes to meta for reminder", r.Title)
+			}
+			r.Meta = meta
+		}
+		reminders = append(reminders, r)
+	}
+	return reminders, nil
 }
 
 func parseReminderNotes(input string) (*ReminderMeta, error) {
@@ -52,51 +78,15 @@ func parseReminderNotes(input string) (*ReminderMeta, error) {
 	return &meta, nil
 }
 
-func getRemindersByList(listName string) ([]Reminder, error) {
-	cmd := exec.Command(REMINDERS_CLI, "export-all")
-	var out strings.Builder
-	var stderr strings.Builder
-	var rl RemindersAll
-	var reminders []Reminder
-	cmd.Stdout = &out
-	cmd.Stderr = &stderr
-	err := cmd.Run()
+func getRemindersAllHandler(c echo.Context) error {
+	var filter RemindersShowAllFilter
+	if err := c.Bind(&filter); err != nil {
+		return c.String(http.StatusBadRequest, "bad request, failed to bind payload")
+	}
+	reminders, err := getRemindersAll(filter)
 	if err != nil {
-		log.Println(fmt.Sprint(err) + ": " + stderr.String())
-		return rl[listName], err
-	}
-	if err = json.Unmarshal([]byte(out.String()), &rl); err != nil {
-		return nil, err
-	}
-	remindersResp, ok := rl[listName]
-	if ok {
-		for _, r := range remindersResp {
-			if r.Notes != nil {
-				meta, err := parseReminderNotes(*r.Notes)
-				if err != nil {
-					log.Println("failed to parse notes to meta for reminder", r.Title)
-				}
-				r.Meta = meta
-			}
-			reminders = append(reminders, r)
-		}
-	} else {
-		return nil, &ListNotFoundError{Name: listName}
-	}
-	return reminders, nil
-}
-
-func remindersListGetHandler(c echo.Context) error {
-	listName := c.PathParam("name")
-	reminders, err := getRemindersByList(listName)
-	if err != nil {
-		switch err.(type) {
-		case *ListNotFoundError:
-			return c.String(http.StatusNotFound, err.Error())
-		default:
-			log.Println(err)
-			return c.String(http.StatusInternalServerError, "NotOK")
-		}
+		log.Println(err)
+		return c.String(http.StatusInternalServerError, "NotOK")
 	}
 	sort.Slice(reminders, func(i, j int) bool {
 		if reminders[i].DueDate == nil {
