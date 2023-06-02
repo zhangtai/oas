@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/robfig/cron/v3"
 )
 
 var (
@@ -18,6 +19,7 @@ var (
 	GITHUB_API_BASE string
 	GITHUB_TOKEN    string
 	REMINDERS_CLI   string
+	CALENDAR_URL    string
 )
 
 func main() {
@@ -35,11 +37,16 @@ func main() {
 	GITHUB_API_BASE = os.Getenv("GITHUB_API_BASE")
 	GITHUB_TOKEN = os.Getenv("GITHUB_TOKEN")
 	REMINDERS_CLI = os.Getenv("REMINDERS_CLI")
+	CALENDAR_URL = os.Getenv("CALENDAR_URL")
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		addRoutes(e)
 		return nil
 	})
+
+	c := cron.New()
+	c.AddFunc("@every 15m", syncCalendar)
+	c.Start()
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
